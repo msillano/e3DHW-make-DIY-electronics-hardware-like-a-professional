@@ -15,4 +15,8 @@ documentation and examples files).
 - Then you can use all public modules as you like.
 
 How to use e3DHWref.1.2.chm?
-- Download it and use a help viewer
+- Download it and use a help viewer.
+- If you see index, but not the content, it has been because windows security has "blocked" the chm file. To see it try the following:
+  - From windows explorer, Right click the dowloated .chm file and select properties.
+  - On the General tab, if you see an Unblock button, click it.
+  - Close the dialog and open the .chm file.
