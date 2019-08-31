@@ -16,4 +16,4 @@ terminals, connectors etc. can be inserted into the 3D project by simplifying as
 
 - For the full story, read the e3DHW_HOWTO_en.pdf file (versione italiana e3DHW_HOWTO_it.pdf)
 - OpenScad libraries, last version, in dir OpenScadLibraries :)
-- File help for all libraries: e3DHWref.1.2.chm. Download it and use a help viewer.
+- File help for all libraries: e3DHWref.1.2.chm.
