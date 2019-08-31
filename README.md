@@ -12,6 +12,8 @@ The use of the 3D printer allows to obtain tailor-made structures without the ne
 workshop machines for cutting, bending or drilling. Also many accessories (ADDONs) such as
 terminals, connectors etc. can be inserted into the 3D project by simplifying assembly and wiring.
 
+![Watering Sonoff](images/sonoff400.jpg  "Sonoff watering timer") 
+
 - For the full story, read the e3DHW_HOWTO_en.pdf file (versione italiana e3DHW_HOWTO_it.pdf)
 - OpenScad libraries, last version, in dir OpenScadLibraries :)
 - File help for all libraries: e3DHWref.1.2.chm. Download it and use a help viewer.
