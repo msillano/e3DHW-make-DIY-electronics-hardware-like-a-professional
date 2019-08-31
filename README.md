@@ -6,7 +6,7 @@ unimaginable, thus bringing new audiences of enthusiasts to electronics.
 
 I want to present some ideas to move from an electronic 'prototype' to a more stable and usable
 realization, in a simple, quick and economical way.
-With the use of a 3D printer and a series of OpenSCAD parametric libraries ready to use.
+With the use of a 3D printer and a series of OpenSCAD (https://www.openscad.org/) parametric libraries ready to use.
 
 The use of the 3D printer allows to obtain tailor-made structures without the need of mechanical
 workshop machines for cutting, bending or drilling. Also many accessories (ADDONs) such as
