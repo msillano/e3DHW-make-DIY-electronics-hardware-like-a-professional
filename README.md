@@ -20,6 +20,6 @@ terminals, connectors etc. can be inserted into the 3D project by simplifying as
 - Also here: https://www.thingiverse.com/thing:2860353
 
 #### Working version: 1.3
- - added Power Management Systen (see power PMS/e3dhw-pms-intro_en.pdf)
- - added power PMS/e3DHW_addon_batteries.1.3.scad
- - added base/e3DHW_array_utils.1.3.scad
+ - added Power Management System (see 'power PMS/e3dhw-pms-intro_en.pdf')
+ - added 'power PMS/e3DHW_addon_batteries.1.3.scad'
+ - added 'base/e3DHW_array_utils.1.3.scad'
