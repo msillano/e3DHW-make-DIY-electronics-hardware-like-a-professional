@@ -30,35 +30,46 @@ module test_batteries(){
             rectangleBase(120, 86, fill=100);
             carve1_batteryHolder(k, x= 20, y=10);   // carve battery holder before
             }
-     add2_batteryHolder(k, x= 20, y=10);   // then add battery holder
+      add2_batteryHolder(k, x= 20, y=10);   // then add battery holder
      }
+   }
+
+module test_LM3914(){
+   difference() {
+      union(){
+         rectangleBase(80, 100, fill=100);
+         add1_LM3914_10LED( x=10, y=10);
+         add1_LM3914_XLED(n=3, x=10, y=50);
+         }
+        carve2_LM3914_10LED( x=10, y=10);
+        carve2_LM3914_XLED(n=3, pos="rigth", x=10, y=50);
+      }
    }
 
 // required by do_arduino_pms()
   include <e3DHW_hardware_data.1.3.scad>;
   include <e3DHW_pcb_board_data.1.3.scad>;    // arduino board data
-  include <e3DHW_addon_terminal.1.3.scad>;    //terminals
-  include <e3DHW_addon_box.1.3.scad>;    
+  include <e3DHW_addon_terminal.1.3.scad>;    // terminals
+  include <e3DHW_addon_box.1.3.scad>;         // for carve_roundPolyBorder
 
 // Arduino Yun board with PMS
 // Arduino Yun max 300 mA (https://forum.arduino.cc/index.php?topic=188821.0)
 module do_arduino_pms(){
- 
- module arduino_yun_box(x=0, y=0, rot=norot){
-// the box border is carved 
-    xb =get_maxX(arduinoYunVertex);
-    translate([x,y,0]) rotate(rot) difference(){
-         add_polyBox(arduinoYunVertex);
-   carve_roundPolyBorder(get_squareArray2 (16, 17.5),  r=0, x= 3,y=31); // lan, 17.5 @31
-   carve_roundPolyBorder(get_squareArray2 (16, 8.0),   r=0, x= 3,y=16);  // USB, 8 @15
-   carve_roundPolyBorder(get_squareArray2 (16, 7.18),  r=0, x= 3,y=6.0);  // USB, 7.18 @6
-   carve_roundPolyBorder(get_squareArray2 (16, 13.50), r=0, x= xb+4,y=11); //SM 13.50, @11
-        }
-   }
+   module arduino_yun_box(x=0, y=0, rot=norot){
+   // the box border is carved 
+       xb =get_maxX(arduinoYunVertex);
+       translate([x,y,0]) rotate(rot) difference(){
+            add_polyBox(arduinoYunVertex);
+ //     carve_roundPolyBorder(get_squareArray2 (16, 17.5),  r=0, x= 3,y=31);   // lan, 17.5 @31
+ //     carve_roundPolyBorder(get_squareArray2 (16, 8.0),   r=0, x= 3,y=16);   // USB, 8 @15
+ //     carve_roundPolyBorder(get_squareArray2 (16, 7.18),  r=0, x= 3,y=6.0);  // USB, 7.18 @6
+      carve_roundPolyBorder(get_squareArray2 (16, 13.50), r=0, x= xb+4,y=11);//SM 13.50, @11
+           }
+      }
   // dimensions 
    xs = 106; //from container size
    ys = 145;
-   xd = 83; // center hole distance
+   xd = 83;  // center hole distance
    dv = 24;  // diam. vertex cut
 
    bx = 16.4;   // size box for 5V step-up module
@@ -66,11 +77,12 @@ module do_arduino_pms(){
    
    lx = 45.53;  // size box led batt-status
    ly = 13.80;
+
   // placements
-   xb = 82; //batteries holder position
+   xb = 82;   //batteries holder position
    yb = 68;
  
-   xa =24 ;  // Arduino position
+   xa =24 ;   // Arduino position
    ya = ys/2+8;
 //
    baseV= get_squareArray2(xs,ys);                  // the main board vetex array
@@ -94,7 +106,7 @@ difference(){
       add_cableFix(4, false, x=66 , y=3, rot= [0,0,90]);    // power cable fix
       add_cableFix(4, false, x=66+8 , y=3, rot= [0,0,90]);  // power cable fix
       add1_terminalM3Block(n= 2, x=18, y = 3);              // input VCC
-      add1_terminalM3Block(n= 2, x=xs-10 , y=7, rot=[0,0,90]);        // output VCC
+      add1_terminalM3Block(n= 2, x=xs-10 , y=7, rot=[0,0,90]);     // output VCC
       add1_milsBox(4,1, x=3, y = 13);
       }
    carve2_terminalM3Block(n= 2, x=18, y = 3);  // input VCC
@@ -104,8 +116,9 @@ difference(){
    }
 }
  
-  
+  // =================== UNCOMMENT TO RUN
+
  // test_batteries();
-  do_arduino_pms();
+ // do_arduino_pms();
  
- 
+  test_LM3914();

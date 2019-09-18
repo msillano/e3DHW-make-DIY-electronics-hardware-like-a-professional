@@ -16,7 +16,7 @@
 */
 /**
 @file e3DHW_addon_batteries.1.3.scad
- ADDON modules for batteries. 
+ ADDON modules for battery holders and PMS projects.
  
  The PMS Power Management System, for DIY electronics (see e3dhw-pms-intro_en.pdf) make use of rechargeable batteries (NiMH, LiIon) and some pcb board.\n
  The ADDONs here allow to make simple, flexible and cheap power suppliers for your circuits.
@@ -129,3 +129,85 @@ module add2_batteryHolder(batt, x =0,y=0, rot= norot){
    }
  }
 
+//! @privatesection
+// locals
+_lmby= 13.8;
+_lmbx= 45.60;
+_10ly= 10.30;
+_10lx= 25.60;
+_10lh= 9.70 -1.65;
+_lmph= 13.5;
+ //! @publicsection
+ 
+/**
+ @fn  add1_LM3914_10LED( x=0, y=0, rot=norot)
+ Adds a Vmeter (LM3914) with 10 LEDs bar to a panel.
+ Uses a cheap commercial kit (e.g. https://www.aliexpress.com/item/32803199745.html).
+*/
+
+module add1_LM3914_10LED( x=0, y=0, rot=norot){
+   
+  translate([x,y,0])rotate(rot){
+   add_polyBox  (
+     get_squareArray2 (_lmbx, _lmby),  
+     height  = _10lh,  
+     hstep  = _10lh -BOARDTHICKNESS );
+     }
+}
+/**
+  @fn carve2_LM3914_10LED( x=0, y=0, rot=norot)
+  companion carve module for add1_LM3914_10LED().
+  */
+module carve2_LM3914_10LED( x=0, y=0, rot=norot){
+  translate([x,y,0])rotate(rot){
+    translate([8.6+BOXTHICKNESS ,0.3+BOXTHICKNESS,-EXTRA]) cube(size=[_10lx, _10ly, 12]);
+    translate([39.6+BOXTHICKNESS,6+BOXTHICKNESS,-EXTRA])cylinder(h= 5, d= 3.30, $fn=32);
+  }
+}
+
+/**
+ @fn add1_LM3914_XLED( n=1, pos = "left", x=0, y=0, rot=norot)
+ Adds a battery test (LM3914) with 1-10 LEDs to a panel.
+ Uses a modified wiring of the kit (https://www.aliexpress.com/item/32803199745.html).
+ So you can use any LEDs (1..10) and colors as you like.\n
+ For 3xNiMM batteries:
+\image html  nimhvolts.png
+I like to use 3 LEDs: 
+    \i 1 LED blue: full charged.
+    \i 1 LED green: normal charge.
+    \i 1 LED red: overdischarge.
+
+It is possible also to use only 2 LEDs: charged/overdischarge.
+Or 4 LEDs, if you like: Full/ normal/ reserve/ overdischarge.
+*/
+module add1_LM3914_XLED( n=1, pos = "left", x=0, y=0, rot=norot){
+   assert( n>0 && n<11, "1 to 10 LEDs for this tester");
+   assert(is_string(pos), "The values for 'pos' parameter are 'left' and 'right'");
+translate([x,y,0])rotate(rot)union(){
+   if (pos == "left")
+      translate([-4.3,4.3,0])add_polyBox  (
+      get_squareArray2 (_lmbx, _lmby ),  
+      height  = 7,  
+      hstep  = 5);
+   else
+      translate([-4.3, -4.8-_lmby-2*BOXTHICKNESS,0]) add_polyBox  (
+      get_squareArray2 (_lmbx, _lmby ),  
+      height  = 7,  
+      hstep  = 5);
+   add1_button6x6();
+   for (i=[1:n])
+      translate([i*8,0,0])add1_LED5holder();
+   }
+}
+
+/**
+  @fn carve2_LM3914_XLED(n=1, pos = "left", x=0, y=0, rot=norot)
+  companion carve module for add1_LM3914_XLED().
+  */
+module carve2_LM3914_XLED(n=1, pos = "left", x=0, y=0, rot=norot){
+translate([x,y,0])rotate(rot)union(){
+    carve2_button6x6();
+    for (i=[1:n])
+       translate([i*8,0,0])carve2_LED5holder();
+    }
+}
