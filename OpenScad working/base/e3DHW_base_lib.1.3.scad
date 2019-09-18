@@ -56,10 +56,11 @@ How to use "e3DHW_xxxxxx.scad" libraries? \n
 
   <i><tt>Public/private</tt> here is a conventional classification: it only means that 'public' things are designed to be used in your projects and are therefore well documented. The main modules are public but also some useful modules/functions to carry out customized projects: see examples. </i>
 
-@see The \b e3DHW \b reference file for all libraries is  \c e3DHWref.1.3.chm.  About  ADDON standardization see @htmlonly <a href='e3_d_h_w__addon__base_81_82_8scad.html#addonuse'>here</a> @endhtmlonly.
+@see The \b e3DHW \b reference file for all libraries is  \c e3DHWref.1.3.chm. \n About  ADDON standardization see @htmlonly <a href='e3_d_h_w__addon__base_81_82_8scad.html#addonuse'>here</a> @endhtmlonly.
 
 
-All e3DHW designs are experimental and may change. The last version can be found here:  
+All e3DHW designs are experimental and may change. The last version can be found here:  <a href = "https://github.com/msillano/e3DHW-make-DIY-electronics-hardware-like-a-professional" target= _blank>
+https://github.com/msillano/e3DHW-make-DIY-electronics-hardware-like-a-professional</a>
 
 @subsection stlintro STL check and repair
  The e3DHW libraries are manifold safe. But that don't minds you will get everytime a perfect STL file. \n

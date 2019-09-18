@@ -24,7 +24,7 @@ include <e3DHW_hardware_data.1.3.scad>
 module all_base_addon(){
 difference(){
    union(){
-      rectangleBase(80, 210, fill=100, x=10); // a solid base
+      rectangleBase(80, 250, fill=100, x=10); // a solid base
       // here  add_xxxx addons
       add_rectangleBox(50, 20, closed=true, x=35, y= 2);
       add1_polySupport([[20,10,-11]], 15, 6, 8, angle= 45, horiz = false); 
@@ -36,7 +36,14 @@ difference(){
       add_cableFix(2, x=50, y=130);
       add_cableFix(4, x=60, y=125);
       add_cableFix(6, x=70, y=120);
-    }
+      add1_LED5holder(x =20, y=220);
+      add1_milsBox(6, 1,x =30,y=220);
+      add1_milsVBox(1, 6,x =55,y=220);
+      add1_milsVBox(6, 1,x =65,y=220);
+      add1_button6x6(11, x=30, y = 240); 
+      add1_SButton6x6(4.3,x=50, y =240); 
+      translate([50,260,5])rotate([180,0,0])SButton_central();
+  }
  // here  carve_xxxx addons
     carve_rectangleBox(50, 20, closed=true, x=35, y= 2);
  //   carve_polyBox(arduinoUnoR3Vertex, x=12, y = 40);
@@ -44,6 +51,11 @@ difference(){
     carve2_polySupport([[20,10,-5]], 15, 6, 8, angle= 45, horiz = false); 
     carve2_polySupport([[30,130,3]], 15, 6, 8, horiz = true);
     carve2_polyTower(15, arduinoUnoR3Holes, cbase=true, x=12, y=150);
+    carve2_LED5holder(x =20, y=220);
+    carve2_milsVBox(1, 6,x =55,y=220);
+    carve2_milsVBox(6, 1,x =65,y=220);
+    carve2_button6x6(11, x=30, y = 240); 
+    carve2_SButton6x6(4.3,x=50, y =240); 
    }
  // one more board  
  difference(){
@@ -61,8 +73,30 @@ difference(){
    }
 }   
 
-
-// base support for scheduled irrigation system with sonoff-basic + humidity meter to fit in Itead box.
+module test_button6x6(){
+   difference(){
+      union(){
+         rectangleBase(200,80, fill=100); // a solid base
+         for(h=[5:13]){
+            add1_button6x6(h, x=h*20-90, y = 20);    // test button6x6
+            add1_SButton6x6(h, x=h*20-90, y = 40);   // SButton6x6
+            translate([h*20-95,0,BOARDTHICKNESS-EXTRA])linear_extrude(height = 1)text(str(h));
+            }
+         add1_SButton6x6(4.3, x=10, y = 60);  // extra _SButton6x6 for 4.3
+        #  translate([130,20,11-2])rotate([180,0,0]) include <contrib/button6x6-11.scad>;
+         }
+      for(h=[5:13]){
+         carve2_button6x6(h, x=h*20-90, y = 20);
+         carve2_SButton6x6(h, x=h*20-90, y = 40);
+         }
+      # translate([0,0,4.1]) SButton_central(x=10, y = 60, rot= [180,0,0]);  // central for extra SButton6x6
+      #  translate([10,60,8.6])rotate([180,0,0]) include <contrib/button6x6-4.3.scad>; // the button in place
+      carve2_SButton6x6(4.3, x=10, y = 60);            // extra SButton6x6 for 4.3
+      translate([-EXTRA,60,-EXTRA])cube([210,50, 40]); // to section extra SButton6x6 for 4.3
+     }
+   }
+   
+// base support for a scheduled irrigation system with sonoff-basic + humidity meter to fit in Itead box.
 // see photos there https://github.com/msillano/sonoff_watering/blob/master/watering-sonoff-en01.pdf 
 module watering_Sonoff04(){
    difference(){
@@ -80,7 +114,8 @@ module watering_Sonoff04(){
 
 // =================== UNCOMMENT TO RUN
 
-// all_base_addon();
+ all_base_addon();
+// test_button6x6();
 // watering_Sonoff04();
 
 

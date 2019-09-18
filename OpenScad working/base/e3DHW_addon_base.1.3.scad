@@ -68,6 +68,9 @@ Temporarily move a new \c carve_xxx ADDON to the ADD ZONE: so you can see it and
       \li  <tt> include <e3DHW_addon_base.1.3.scad> </tt>
      <i> but don't allow duplicate includes.</i>
 
+@see  Thanks to  Egor Chugay for 6x6 button models:
+        https://grabcad.com/library/button-6x6-hole-mount-collection-1
+
  @author    Marco Sillano
  @version 0.1.1    18/03/2018 base version
  @version 0.1.2   29/07/2019 Bugs correction. 
@@ -134,7 +137,7 @@ module add_polyBox(vertex=undef, height=BOXHEIGHT, closed=false, lstep= BOXSTEPL
   */
 module carve_polyBox(vertex=undef, height=BOXHEIGHT, closed=false, lstep= BOXSTEPL, hstep=BOXSTEPH, x=0, y=0, rot = norot){
    assert(is_arrayOK(vertex, 2, 3), "test on array failed");
-  if (closed==false) translate([x,y,-EXTRA])rotate(rot)translate([BOXTOLERANCE+BOXTHICKNESS+EXTRA,BOXTOLERANCE+BOXTHICKNESS+EXTRA,0])linear_extrude(height = CARVEZ, center = false)offset(delta= -lstep+EXTRA) _sizebox(vertex);   
+  if (closed==false) translate([x,y,0])rotate(rot)translate([BOXTOLERANCE+BOXTHICKNESS+EXTRA,BOXTOLERANCE+BOXTHICKNESS+EXTRA,-EXTRA])linear_extrude(height = CARVEZ, center = false)offset(delta= -lstep+EXTRA) _sizebox(vertex);   
 }
 
 /** 
@@ -166,6 +169,7 @@ module carve_rectangleBox(pcbx, pcby, height =BOXHEIGHT, closed=false, x=0, y=0,
 /**
   @fn add1_milsBox(mx, my, h=4, x =0,y=0, rot= norot)
   Small support for MIL connectors (male and female).
+  For board, for connections or also for TP, jumpers etc. 
   @param mx the x size in MILs 
   @param my the y size in MILs.
   @param h box border height [mm], default 4 [mm]
@@ -187,6 +191,29 @@ module carve2_milsBox(mx, my,h=4, x =0,y=0, rot= norot){
      hstep = 1, x = (x), y = (y), rot = (rot) ); }   
 
 /**
+  @fn add1_milsVBox(mx, my, h=4, x =0,y=0, rot= norot)
+  Like add1_milsBox() but over the board.
+  For panels and boards, for internal connections.
+  @param mx the horizontal size in MILs 
+  @param my the vertical size in MILs.
+  @param h box border height [mm], default 4 [mm]
+  @since 1.3
+  */
+module add1_milsVBox(mx, my, h=4, x =0,y=0, rot= norot){
+   assert ((mx > 0) &&(my > 0), "sizes (mx, my) must be positive values");
+  translate([x,y,0])rotate(rot)translate([0,0,BOARDTHICKNESS-BOXTHICKNESS+EXTRA])difference(){rotate([90,0,0])add1_milsBox(mx, my, h);
+   translate([BOXTHICKNESS+BOXTOLERANCE+MILs/4,-h-4, my*MILs+BOARDTHICKNESS-BOXTHICKNESS-MILs/4-EXTRA]) cube([mx*MILs-2*MILs/4 + 2*BOXTOLERANCE,h+5, 5]);
+  }
+ }
+
+/**
+  @fn carve2_milsVBox(mx, my, h=4, x =0,y=0, rot= norot)
+  companion carve module for add1_milsHBox().
+  */
+module carve2_milsVBox(mx, my,h=4, x =0,y=0, rot= norot){
+  translate([x,y,0])rotate(rot)translate([0,0,BOARDTHICKNESS-BOXTHICKNESS+EXTRA])rotate([90,0,0])carve2_milsBox(mx, my, h);
+}
+/**
   @fn add1_LED5holder(h= 6, x =0, y=0, rot= norot)
   Small support for 5 mm LEDs (for panels)
   @param mx the x size in MILs 
@@ -195,7 +222,7 @@ module carve2_milsBox(mx, my,h=4, x =0,y=0, rot= norot){
   @since 1.3
   */
 module add1_LED5holder(h= 6, x =0, y=0, rot= norot){
-   translate([x,y,EXTRA])rotate(rot)cylinder(r= 4.5, $fn=16,h = (h));
+   translate([x,y,0])rotate(rot)translate([0,0,EXTRA])cylinder(r= 4.5, $fn=16,h = (h));
   }
 
 /**
@@ -203,7 +230,86 @@ module add1_LED5holder(h= 6, x =0, y=0, rot= norot){
   companion carve module for add1_LED5holder().
   */
 module carve2_LED5holder(h= 6, x =0, y=0, rot= norot){
-    translate([x,y,-1])rotate(rot)cylinder(r= 5/2, $fn=32,h = (h)+4);
+    translate([x,y,0])rotate(rot)translate([0,0,-1])cylinder(r= 5/2, $fn=32,h = (h)+4);
+}
+
+//! @privatesection
+
+// private values about 6x6 switch:
+   _body=4;  // switch h.[mm]
+   _lim = 2; // out button [mm]
+   _bx = 6.2+ 2*BOXTHICKNESS; // box for 6x6 
+   _by = 8+2*BOXTHICKNESS;    // box for 6x6
+
+//! @publicsection
+
+/**
+  @fn add1_button6x6(h = 11, x =0,y=0, rot= norot)
+   Receptacle for 6x6mm Tactile Push Button, long type.
+   For panels, adds a button and it protrudes only 2 mm (_lim).
+ \image html 6x6buttons.png.
+   @param h total height. min 7-8 mm.
+   for 4<h<8: out h -5 [mm]
+   for h >=8: out 3 [mm]
+  @since 1.3
+  */
+ module add1_button6x6(h = 11, x =0,y=0, rot= norot){
+    // 6x6x 11
+   assert(h >6, "h too small for this button holder");
+   _out = (h-_body >=_lim+1?_lim:h-_body-1);
+   translate([x,y,0])rotate(rot)translate([0,0, (h-_out)/2+EXTRA]) cube([_bx, _by,h-_out-EXTRA], center = true);
+ }
+ 
+/**
+  @fn carve2_button6x6( h = 11, x =0, y=0, rot= norot)
+  companion carve module for add1_button6x6().
+  */
+ module carve2_button6x6( h = 11, x =0, y=0, rot= norot){
+    // 6x6x11 => 6.2x8, d = 3.4
+    _out = (h-_body >=_lim+1?_lim:h-_body-1);
+   translate([x,y,0])rotate(rot)translate([0,0,-EXTRA])union(){
+       translate([0,0,20/2+h-_out-_body])cube([6.2,8, 20],center = true);
+       cylinder(h= 20, d= 3.40, $fn=32);
+    }
+ }
+ 
+ /**
+  @fn add1_SButton6x6( h= 5, x =0,y=0, rot= norot)
+   Receptacle for 6x6mm Tactile Push Button, short type.
+   Adds a button that  protrudes 2 mm (_lim) from panel.
+ \image html sbutton6x6.png.
+   @param h total height. Min val: 4.3 
+  @since 1.3
+  */
+ module add1_SButton6x6( h= 5, x =0,y=0, rot= norot){
+    // 6.2x8
+    assert(h >4, "h too small for this button holder");
+    _bh = h +5;
+    translate([x,y,0])rotate(rot)translate([0,0,_bh/2+EXTRA]) cube([_bx, _by,_bh], center = true);
+ }
+/**
+  @fn carve2_SButton6x6(h= 5, x =0,y=0, rot= norot)
+  companion carve module for add1_SButton6x6().
+  */
+module carve2_SButton6x6(h= 5, x =0,y=0, rot= norot){
+    // 6.2x8
+   _bh = h +5;
+   translate([x,y,0])rotate(rot)translate([0,0,-EXTRA])union(){
+      translate([0,0,_bh/2+h])cube([6.2,8, _bh],center = true);
+      translate([0,0,2+EXTRA])cylinder(h= 10, d= 5.2, $fn=32);
+      cylinder(h= 13, d= 3.40, $fn=32);
+      }
+ }
+/**
+  @fn  SButton_central( x =0,y=0, rot= norot)
+   The button used by add1_SButton6x6().
+  @since 1.3
+  */
+module SButton_central( x =0,y=0, rot= norot){
+   translate([x,y,0])rotate(rot)union() {
+     cylinder(h= 6, d= 3.30, $fn=32);
+     cylinder(h= 2, d= 5, $fn=32);
+     }
 }
 
 /** 
@@ -226,8 +332,8 @@ module carve2_LED5holder(h= 6, x =0, y=0, rot= norot){
   */
 module add1_tower(height, holediam=3, towerd= xauto, cbase=true, x=0, y=0, rot = norot){
    if(height > 0) {
-      pointt =[[0,0,holediam]];
-      add1_polyTower(height, pointt, towerd, cbase, x, y, rot);
+      _pointt =[[0,0,holediam]];
+      add1_polyTower(height, _pointt, towerd, cbase, x, y, rot);
    }
 }
 
@@ -238,7 +344,7 @@ module add1_tower(height, holediam=3, towerd= xauto, cbase=true, x=0, y=0, rot =
 module carve2_tower(height, holediam=3, towerd= xauto, cbase=true, x=0, y=0, rot = norot){
   if(height > 0) {
    _pointt =[[0,0,holediam]];
-   carve2_polyTower(0,_pointt, 0, cbase, x, y, rot);
+    carve2_polyTower(height,_pointt, 0, cbase, x, y, rot);
    }
 }
 
