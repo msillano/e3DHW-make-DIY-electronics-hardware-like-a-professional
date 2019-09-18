@@ -66,7 +66,9 @@ for (usetype = [HT, FT ])
       }
    }
 
+// =================== UNCOMMENT TO RUN
+
 // test_terminalM3Block();
 // test_simpleMammut();
- test_cubeMammut();
+// test_cubeMammut();
 
